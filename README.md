@@ -209,7 +209,14 @@ python run_pipeline.py --eda
 streamlit run app/streamlit_app.py
 ```
 *Access in browser at `http://localhost:8501`.*  
-Includes Executive Overview, Demand Forecasts (with backtest chart), Inventory Risk Heatmaps, 4-Tier Action Recommendations, and Financial Impact in Indian Rupees (₹).
+Includes 7 dedicated navigation pages:
+1. **Executive Overview**: Total Revenue, Lifetime Units Sold, Trailing 30D Revenue, Active SKUs, Working Capital exposure, 4-Tier Operational Status counts, and Top 10 exposure tables.
+2. **Demand Forecasts**: Historical demand, 8-week forward forecast, 80% confidence prediction intervals, Seasonal-Naive baseline comparison trajectory, WAPE/MAE/RMSE/MAPE, Forecast Bias, and rolling-origin backtest evaluation.
+3. **Inventory Risk**: On-hand, on-order, lead time, days/weeks of supply, stockout risk heatmap, and distribution histograms.
+4. **Stockout vs Overstock Grid**: 2D interactive decision bubble scatter plot mapping Overstock Risk Score (0-100) vs. Stockout Risk Score (0-100) with financial exposure bubble sizing.
+5. **Action Center**: Reorder replenishment orders, markdown clearance candidates, and consolidated 4-tier operational recommendations with SKU-level financial exposure in Indian Rupees (₹).
+6. **SKU 360° Details**: Comprehensive single-SKU drill-down view integrating catalog metadata, inventory status, risk intelligence, demand trajectory, and financial exposure.
+7. **Financial Impact**: Rupee-denominated sales at risk, excess capital locked, category breakdown charts, and top impact SKU tables.
 
 ### 4. Start the FastAPI REST Microservice
 ```bash
