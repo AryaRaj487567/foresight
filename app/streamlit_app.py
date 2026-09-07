@@ -14,6 +14,26 @@ if str(project_root) not in sys.path:
 
 st.set_page_config(page_title="PROJECT FORESIGHT", page_icon="📊", layout="wide")
 
+# Polish metric typography to prevent Rupee value clipping
+st.markdown(
+    """
+    <style>
+    [data-testid="stMetricValue"] {
+        font-size: 1.40rem !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        font-weight: 600 !important;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Colors
 COLOR_SCHEME = {
     "primary": "#1f77b4",
@@ -252,7 +272,8 @@ if selection == "Executive Overview":
     
     # Row 3: 4-Tier Operational Status Counts (Derived Dynamically)
     st.markdown("##### 🎯 4-Tier Operational Action Status")
-    f_actions = filter_by_cat(df_actions)
+    enriched_actions = get_enriched_actions()
+    f_actions = filter_by_cat(enriched_actions)
     rec_counts = {"Reorder": 0, "Markdown": 0, "Watch": 0, "Healthy": 0}
     if f_actions is not None and "recommendation" in f_actions.columns:
         actual_counts = f_actions["recommendation"].value_counts().to_dict()
@@ -267,8 +288,36 @@ if selection == "Executive Overview":
     c_rec3.metric("🟡 Watch (Monitor Buffer)", f"{rec_counts.get('Watch', 0)} SKUs")
     c_rec4.metric("🟢 Healthy (Optimal)", f"{rec_counts.get('Healthy', 0)} SKUs")
     
+    # Section D: Executive Key Actions
+    st.markdown("##### ⚡ Key Actions & Executive Priorities")
+    f_reorder = filter_by_cat(df_reorder)
+    f_markdown = filter_by_cat(df_markdown)
+    reorder_cost = float(f_reorder["estimated_cost"].sum()) if (f_reorder is not None and not f_reorder.empty and "estimated_cost" in f_reorder.columns) else 0.0
+    markdown_recov = float(f_markdown["potential_recovery"].sum()) if (f_markdown is not None and not f_markdown.empty and "potential_recovery" in f_markdown.columns) else 0.0
+    
+    # Identify positive exposure SKU subsets
+    pos_sar = f_actions[f_actions["sales_at_risk"] > 0] if f_actions is not None else pd.DataFrame()
+    pos_exc = f_actions[f_actions["excess_inventory_value"] > 0] if f_actions is not None else pd.DataFrame()
+    
+    # Prioritize top financial driver
+    if rev_at_risk >= excess_cap:
+        primary_driver = f"**Sales-at-Risk Exposure ({format_currency(rev_at_risk)})** represents NorthBay Living's immediate revenue vulnerability across **{len(pos_sar)} high-risk SKU(s)** facing lead-time stockouts."
+        secondary_driver = f"**Excess Capital Locked ({format_currency(excess_cap)})** in **{len(pos_exc)} overstocked SKU(s)** creates avoidable carrying cost and working-capital drag."
+    else:
+        primary_driver = f"**Excess Capital Locked ({format_currency(excess_cap)})** represents the largest working-capital trap, tied up across **{len(pos_exc)} overstocked SKU(s)**."
+        secondary_driver = f"**Sales-at-Risk Exposure ({format_currency(rev_at_risk)})** threatens imminent stockout disruption across **{len(pos_sar)} high-risk SKU(s)**."
+
+    st.info(
+        f"**Executive Action Summary:**\n\n"
+        f"- 🔴 **Replenishment Orders Required:** **{rec_counts.get('Reorder', 0)} SKUs** need purchase order execution (Total capital required: **{format_currency(reorder_cost)}**).\n"
+        f"- 🟠 **Markdown Clearance Candidates:** **{rec_counts.get('Markdown', 0)} SKUs** recommended for structured discount clearance (Potential liquidity recovery: **{format_currency(markdown_recov)}**).\n"
+        f"- ⚠️ {primary_driver}\n"
+        f"- 📦 {secondary_driver}"
+    )
+
     st.markdown("---")
     
+    # Section E: Visual Analytics
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Risk Level Distribution")
@@ -290,38 +339,36 @@ if selection == "Executive Overview":
         else:
             st.info("Revenue data not available.")
             
-    # Top 10 Tables - using correct nested keys
+    # Section F: Top Positive Risk Tables (Filtered for positive values only)
     st.markdown("---")
     t1, t2 = st.columns(2)
     with t1:
-        st.subheader("Top 10 Revenue at Risk SKUs")
-        top_skus_rar = None
-        if risk_summary and "revenue_at_risk" in risk_summary and "top_10_skus" in risk_summary["revenue_at_risk"]:
-            raw_top = risk_summary["revenue_at_risk"]["top_10_skus"]
-            if raw_top:
-                top_skus_rar = pd.DataFrame(raw_top, columns=["sku_id", "product_name", "revenue_at_risk"])
-        if top_skus_rar is not None and not top_skus_rar.empty:
-            df_disp = top_skus_rar.copy()
-            df_disp["revenue_at_risk"] = df_disp["revenue_at_risk"].apply(format_currency)
-            df_disp.columns = ["SKU ID", "Product Name", "Sales at Risk (₹)"]
-            st.dataframe(df_disp, use_container_width=True)
+        st.subheader("Top Positive Sales at Risk SKUs")
+        if f_actions is not None and not f_actions.empty:
+            top_pos_sar = f_actions[f_actions["sales_at_risk"] > 0].sort_values("sales_at_risk", ascending=False).head(10)
+            if not top_pos_sar.empty:
+                df_disp = top_pos_sar[["sku_id", "product_name", "sales_at_risk"]].copy()
+                df_disp["sales_at_risk"] = df_disp["sales_at_risk"].apply(format_currency)
+                df_disp.columns = ["SKU ID", "Product Name", "Sales at Risk (₹)"]
+                st.dataframe(df_disp, use_container_width=True)
+            else:
+                st.success("✅ No SKUs currently have positive sales at risk under selected filters.")
         else:
-            st.info("No revenue at risk top SKUs available.")
+            st.info("Risk data not available.")
             
     with t2:
-        st.subheader("Top 10 Excess Capital SKUs")
-        top_skus_exc = None
-        if risk_summary and "excess_capital" in risk_summary and "top_10_skus" in risk_summary["excess_capital"]:
-            raw_top2 = risk_summary["excess_capital"]["top_10_skus"]
-            if raw_top2:
-                top_skus_exc = pd.DataFrame(raw_top2, columns=["sku_id", "product_name", "excess_capital"])
-        if top_skus_exc is not None and not top_skus_exc.empty:
-            df_disp2 = top_skus_exc.copy()
-            df_disp2["excess_capital"] = df_disp2["excess_capital"].apply(format_currency)
-            df_disp2.columns = ["SKU ID", "Product Name", "Excess Capital (₹)"]
-            st.dataframe(df_disp2, use_container_width=True)
+        st.subheader("Top Positive Excess Capital SKUs")
+        if f_actions is not None and not f_actions.empty:
+            top_pos_exc = f_actions[f_actions["excess_inventory_value"] > 0].sort_values("excess_inventory_value", ascending=False).head(10)
+            if not top_pos_exc.empty:
+                df_disp2 = top_pos_exc[["sku_id", "product_name", "excess_inventory_value"]].copy()
+                df_disp2["excess_inventory_value"] = df_disp2["excess_inventory_value"].apply(format_currency)
+                df_disp2.columns = ["SKU ID", "Product Name", "Excess Capital (₹)"]
+                st.dataframe(df_disp2, use_container_width=True)
+            else:
+                st.success("✅ No SKUs currently hold excess inventory capital under selected filters.")
         else:
-            st.info("No excess capital top SKUs available.")
+            st.info("Excess capital data not available.")
 
 elif selection == "Demand Forecasts":
     st.header("Demand Forecasts")
@@ -619,6 +666,10 @@ elif selection == "Action Center":
         else:
             display_actions = f_actions
             
+        # Sort by total financial exposure descending for maximum executive clarity
+        if "total_financial_exposure" in display_actions.columns:
+            display_actions = display_actions.sort_values("total_financial_exposure", ascending=False)
+            
         show_cols = [
             "sku_id", "product_name", "category", "recommendation", "risk_level", 
             "days_of_supply", "weeks_of_supply", "stockout_risk_score", "overstock_risk_score",
@@ -654,8 +705,8 @@ elif selection == "SKU 360° Details":
             
             sku_meta = f_sku[f_sku["sku_id"] == sel_sku_id].iloc[0]
             
-            # 1. Catalog Metadata
-            st.subheader("1. Catalog Metadata")
+            # 1. Catalog Identity
+            st.subheader("1. Catalog Identity & Specifications")
             m1, m2, m3, m4, m5, m6 = st.columns(6)
             m1.metric("SKU ID", str(sku_meta.get("sku_id", "")))
             m2.metric("Product Name", str(sku_meta.get("product_name", "")))
@@ -666,40 +717,24 @@ elif selection == "SKU 360° Details":
             
             st.markdown("---")
             
-            # 2. Inventory Position & Risk Intelligence
+            # 2. Inventory Position
             enriched = get_enriched_actions()
             sku_action = enriched[enriched["sku_id"] == sel_sku_id].iloc[0] if (enriched is not None and not enriched[enriched["sku_id"] == sel_sku_id].empty) else None
             
-            st.subheader("2. Inventory Position & Risk Intelligence")
+            st.subheader("2. Current Inventory Position")
             i1, i2, i3, i4, i5, i6 = st.columns(6)
             if sku_action is not None:
-                i1.metric("On Hand", f"{int(sku_action.get('on_hand_units', 0)):,} units")
-                i2.metric("On Order", f"{int(sku_action.get('on_order_units', 0)):,} units")
+                i1.metric("On Hand Units", f"{int(sku_action.get('on_hand_units', 0)):,}")
+                i2.metric("On Order Units", f"{int(sku_action.get('on_order_units', 0)):,}")
                 i3.metric("Lead Time", f"{int(sku_action.get('lead_time_days', 0))} days")
-                i4.metric("Reorder Point", f"{int(sku_action.get('reorder_point', 0))} units")
+                i4.metric("Reorder Point", f"{int(sku_action.get('reorder_point', 0)):,} units")
                 i5.metric("Days of Supply", f"{sku_action.get('days_of_supply', 0):.1f} days")
                 i6.metric("Weeks of Supply", f"{sku_action.get('weeks_of_supply', 0):.1f} wks")
             
-            st.markdown("##### 🎯 Recommendation & Risk Scores")
-            r1, r2, r3, r4, r5 = st.columns(5)
-            if sku_action is not None:
-                r1.metric("Action Tier", str(sku_action.get("recommendation", "")))
-                r2.metric("Stockout Risk Level", str(sku_action.get("risk_level", "")))
-                r3.metric("Stockout Risk Score", f"{sku_action.get('stockout_risk_score', 0):.1f} / 100")
-                r4.metric("Overstock Risk Score", f"{sku_action.get('overstock_risk_score', 0):.1f} / 100")
-                r5.metric("Action Rationale", str(sku_action.get("action_description", "")))
-                
-            st.markdown("##### 💰 SKU Financial Exposure")
-            f1, f2, f3 = st.columns(3)
-            if sku_action is not None:
-                f1.metric("Sales at Risk (Potential Stockout)", format_currency(sku_action.get("sales_at_risk", 0)))
-                f2.metric("Excess Capital (Overstock)", format_currency(sku_action.get("excess_inventory_value", 0)))
-                f3.metric("Total Financial Exposure", format_currency(sku_action.get("total_financial_exposure", 0)))
-                
             st.markdown("---")
-            
+
             # 3. Demand & Forecast Trajectory
-            st.subheader("3. Demand & Forecast Trajectory")
+            st.subheader("3. Demand History & 8-Week Forecast Trajectory")
             sku_weekly = df_weekly[df_weekly["sku_id"] == sel_sku_id].copy() if df_weekly is not None else pd.DataFrame()
             sku_fcst = df_forecast[df_forecast["sku_id"] == sel_sku_id].copy() if df_forecast is not None else pd.DataFrame()
             sku_sn = df_seasonal_naive[df_seasonal_naive["sku_id"] == sel_sku_id].copy() if not df_seasonal_naive.empty else pd.DataFrame()
@@ -714,12 +749,12 @@ elif selection == "SKU 360° Details":
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(
                     x=sku_weekly["week_start"], y=sku_weekly["weekly_units"],
-                    mode='lines', name='Historical Sales', line=dict(color=COLOR_SCHEME["primary"])
+                    mode='lines', name='Historical Sales', line=dict(color=COLOR_SCHEME["primary"], width=2)
                 ))
                 if not sku_sn.empty:
                     fig.add_trace(go.Scatter(
                         x=sku_sn["week_start"], y=sku_sn["seasonal_naive_units"],
-                        mode='lines+markers', name='Seasonal Naive Baseline', line=dict(color="#9467bd", dash='dot')
+                        mode='lines+markers', name='Seasonal Naive Baseline', line=dict(color="#9467bd", dash='dot', width=1.8)
                     ))
                 fig.add_trace(go.Scatter(
                     x=sku_fcst["week_start"], y=sku_fcst["forecast_units"],
@@ -739,6 +774,28 @@ elif selection == "SKU 360° Details":
                 df_table["week_start"] = df_table["week_start"].dt.strftime("%Y-%m-%d")
                 df_table.columns = ["Forecast Week Start", "Forecast Units", "Lower Bound", "Upper Bound"]
                 st.dataframe(df_table.round(2), use_container_width=True)
+
+            st.markdown("---")
+
+            # 4. Risk Intelligence & Action Recommendation
+            st.subheader("4. Risk Intelligence & Operational Action")
+            r1, r2, r3, r4 = st.columns(4)
+            if sku_action is not None:
+                r1.metric("Action Tier", str(sku_action.get("recommendation", "")))
+                r2.metric("Stockout Risk Level", str(sku_action.get("risk_level", "")))
+                r3.metric("Stockout Risk Score", f"{sku_action.get('stockout_risk_score', 0):.1f} / 100")
+                r4.metric("Overstock Risk Score", f"{sku_action.get('overstock_risk_score', 0):.1f} / 100")
+                st.caption(f"**Operational Rationale:** {sku_action.get('action_description', '')}")
+
+            st.markdown("---")
+
+            # 5. SKU Financial Exposure
+            st.subheader("5. SKU Financial Exposure & Capital Impact")
+            f1, f2, f3 = st.columns(3)
+            if sku_action is not None:
+                f1.metric("Sales at Risk (Potential Stockout)", format_currency(sku_action.get("sales_at_risk", 0)))
+                f2.metric("Excess Capital (Overstock)", format_currency(sku_action.get("excess_inventory_value", 0)))
+                f3.metric("Total Financial Exposure", format_currency(sku_action.get("total_financial_exposure", 0)))
         else:
             st.warning("No SKUs available for selected filters.")
     else:
@@ -764,11 +821,25 @@ elif selection == "Financial Impact":
         elif "total_excess_capital" in risk_summary:
             exc_cap = float(risk_summary["total_excess_capital"])
         
+        # Executive Financial Impact KPIs (Row 1: 3 macro exposure KPIs; Row 2: 2 operational liquidity/capital KPIs)
+        f_reorder = filter_by_cat(df_reorder)
+        f_markdown = filter_by_cat(df_markdown)
+        reorder_capital = float(f_reorder["estimated_cost"].sum()) if (f_reorder is not None and not f_reorder.empty and "estimated_cost" in f_reorder.columns) else 0.0
+        markdown_recovery = float(f_markdown["potential_recovery"].sum()) if (f_markdown is not None and not f_markdown.empty and "potential_recovery" in f_markdown.columns) else 0.0
+
+        st.markdown("##### 💼 Working Capital & Risk Exposure")
         c1, c2, c3 = st.columns(3)
-        c1.metric("Total Sales at Risk", format_currency(rev_risk))
-        c2.metric("Total Excess Capital Locked", format_currency(exc_cap))
+        c1.metric("Sales at Risk (Potential Stockout)", format_currency(rev_risk))
+        c2.metric("Excess Capital Locked (Overstock)", format_currency(exc_cap))
         c3.metric("Net Financial Exposure", format_currency(rev_risk + exc_cap))
+
+        st.markdown("##### ⚡ Capital Allocation & Liquidity Opportunities")
+        c4, c5 = st.columns(2)
+        c4.metric("Reorder Capital Needed (Replenishment)", format_currency(reorder_capital))
+        c5.metric("Markdown Liquidity Potential (Clearance)", format_currency(markdown_recovery))
         
+        st.markdown("---")
+
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("Sales at Risk by Category")
@@ -807,37 +878,39 @@ elif selection == "Financial Impact":
                     fig2 = px.bar(df_cat_exc, x="Value", y="Category", orientation='h', color_discrete_sequence=[COLOR_SCHEME["warning"]], text_auto='.2s')
                     st.plotly_chart(fig2, use_container_width=True)
                     
-        st.subheader("Top SKUs by Financial Impact")
+        st.markdown("---")
+        st.subheader("Top SKUs by Financial Impact (Positive Exposure)")
         
+        enriched_actions = get_enriched_actions()
+        f_actions = filter_by_cat(enriched_actions)
+
         t1, t2 = st.columns(2)
         with t1:
-            st.markdown("**Top 10 Sales at Risk**")
-            top_rev = None
-            if "revenue_at_risk" in risk_summary and "top_10_skus" in risk_summary["revenue_at_risk"]:
-                raw_top = risk_summary["revenue_at_risk"]["top_10_skus"]
-                if raw_top:
-                    top_rev = pd.DataFrame(raw_top, columns=["sku_id", "product_name", "revenue_at_risk"])
-            if top_rev is not None and not top_rev.empty:
-                df_top_rev = top_rev.copy()
-                df_top_rev["revenue_at_risk"] = df_top_rev["revenue_at_risk"].apply(format_currency)
-                df_top_rev.columns = ["SKU ID", "Product Name", "Sales at Risk (₹)"]
-                st.dataframe(df_top_rev, use_container_width=True)
+            st.markdown("**Top Positive Sales at Risk SKUs**")
+            if f_actions is not None and not f_actions.empty:
+                top_pos_sar = f_actions[f_actions["sales_at_risk"] > 0].sort_values("sales_at_risk", ascending=False).head(10)
+                if not top_pos_sar.empty:
+                    df_top_rev = top_pos_sar[["sku_id", "product_name", "sales_at_risk"]].copy()
+                    df_top_rev["sales_at_risk"] = df_top_rev["sales_at_risk"].apply(format_currency)
+                    df_top_rev.columns = ["SKU ID", "Product Name", "Sales at Risk (₹)"]
+                    st.dataframe(df_top_rev, use_container_width=True)
+                else:
+                    st.success("✅ No SKUs currently have positive sales at risk under selected filters.")
             else:
-                st.info("No top revenue at risk SKUs available.")
+                st.info("Risk data not available.")
         with t2:
-            st.markdown("**Top 10 Excess Capital**")
-            top_exc = None
-            if "excess_capital" in risk_summary and "top_10_skus" in risk_summary["excess_capital"]:
-                raw_top2 = risk_summary["excess_capital"]["top_10_skus"]
-                if raw_top2:
-                    top_exc = pd.DataFrame(raw_top2, columns=["sku_id", "product_name", "excess_capital"])
-            if top_exc is not None and not top_exc.empty:
-                df_top_exc = top_exc.copy()
-                df_top_exc["excess_capital"] = df_top_exc["excess_capital"].apply(format_currency)
-                df_top_exc.columns = ["SKU ID", "Product Name", "Excess Capital (₹)"]
-                st.dataframe(df_top_exc, use_container_width=True)
+            st.markdown("**Top Positive Excess Capital SKUs**")
+            if f_actions is not None and not f_actions.empty:
+                top_pos_exc = f_actions[f_actions["excess_inventory_value"] > 0].sort_values("excess_inventory_value", ascending=False).head(10)
+                if not top_pos_exc.empty:
+                    df_top_exc = top_pos_exc[["sku_id", "product_name", "excess_inventory_value"]].copy()
+                    df_top_exc["excess_inventory_value"] = df_top_exc["excess_inventory_value"].apply(format_currency)
+                    df_top_exc.columns = ["SKU ID", "Product Name", "Excess Capital (₹)"]
+                    st.dataframe(df_top_exc, use_container_width=True)
+                else:
+                    st.success("✅ No SKUs currently hold excess inventory capital under selected filters.")
             else:
-                st.info("No top excess capital SKUs available.")
+                st.info("Excess capital data not available.")
     else:
         st.error("Risk summary JSON not available.")
 
