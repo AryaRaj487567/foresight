@@ -1,0 +1,140 @@
+{
+  "revenue_at_risk": {
+    "currency": "INR (\u20b9)",
+    "total_revenue_at_risk": 8792.08,
+    "total_revenue_at_risk_inr_formatted": "\u20b98,792.08",
+    "by_category": {
+      "Bedding": 0.0,
+      "Decor": 0.0,
+      "Furniture": 0.0,
+      "Kitchen": 155.88,
+      "Outdoor": 8636.2
+    },
+    "by_risk_level": {
+      "CRITICAL": 8792.08,
+      "HIGH": 0.0
+    },
+    "top_10_skus": [
+      [
+        "SKU-053",
+        "Wicker Lounge Chair",
+        8636.2
+      ],
+      [
+        "SKU-032",
+        "Dutch Oven",
+        155.88
+      ],
+      [
+        "SKU-005",
+        "Linen Sofa",
+        0.0
+      ],
+      [
+        "SKU-006",
+        "Upholstered Ottoman",
+        0.0
+      ],
+      [
+        "SKU-012",
+        "Glass End Table",
+        0.0
+      ],
+      [
+        "SKU-013",
+        "Geometric Rug",
+        0.0
+      ],
+      [
+        "SKU-024",
+        "Macrame Plant Hanger",
+        0.0
+      ],
+      [
+        "SKU-028",
+        "Spice Rack",
+        0.0
+      ],
+      [
+        "SKU-033",
+        "Toaster Oven",
+        0.0
+      ],
+      [
+        "SKU-043",
+        "Egyptian Cotton Sheet Set",
+        0.0
+      ]
+    ]
+  },
+  "excess_capital": {
+    "currency": "INR (\u20b9)",
+    "total_excess_capital": 15385.649999999998,
+    "total_excess_capital_inr_formatted": "\u20b915,385.65",
+    "by_category": {
+      "Bedding": 7881.349999999999,
+      "Decor": 642.0,
+      "Furniture": 2347.77,
+      "Kitchen": 4514.53,
+      "Outdoor": 0.0
+    },
+    "top_10_skus": [
+      [
+        "SKU-044",
+        "Quilted Mattress Pad",
+        6738.19
+      ],
+      [
+        "SKU-029",
+        "Stainless Steel Cookware Set",
+        3377.29
+      ],
+      [
+        "SKU-009",
+        "Wood TV Stand",
+        1580.31
+      ],
+      [
+        "SKU-041",
+        "Flannel Duvet Cover",
+        1143.16
+      ],
+      [
+        "SKU-039",
+        "Bamboo Cutting Board",
+        1137.24
+      ],
+      [
+        "SKU-011",
+        "Leather Recliner",
+        767.46
+      ],
+      [
+        "SKU-023",
+        "Abstract Canvas Art",
+        642.0
+      ],
+      [
+        "SKU-002",
+        "Velvet Armchair",
+        0.0
+      ],
+      [
+        "SKU-007",
+        "Rustic Dining Chair",
+        0.0
+      ],
+      [
+        "SKU-030",
+        "Mixing Bowl Set",
+        0.0
+      ]
+    ]
+  },
+  "recommendations_breakdown": {
+    "Watch": 27,
+    "Reorder": 13,
+    "Healthy": 11,
+    "Markdown": 9
+  }
+}

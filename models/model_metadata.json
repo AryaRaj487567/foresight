@@ -1,0 +1,31 @@
+{
+  "model_type": "GradientBoostingRegressor",
+  "feature_columns": [
+    "unit_price",
+    "promo_flag",
+    "unit_cost",
+    "list_price",
+    "month",
+    "weeks_since_launch",
+    "season_Fall",
+    "season_Spring",
+    "season_Summer",
+    "season_Winter",
+    "category_Bedding",
+    "category_Decor",
+    "category_Furniture",
+    "category_Kitchen",
+    "category_Outdoor",
+    "lag_1",
+    "lag_2",
+    "lag_3",
+    "lag_4",
+    "rolling_mean_4",
+    "rolling_mean_8",
+    "rolling_std_4",
+    "is_promo_week"
+  ],
+  "target": "weekly_units",
+  "n_features": 23,
+  "horizon_weeks": 8
+}

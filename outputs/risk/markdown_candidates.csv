@@ -1,0 +1,10 @@
+sku_id,product_name,category,weeks_of_supply,excess_units,suggested_discount_pct,reason,potential_recovery
+SKU-002,Velvet Armchair,Furniture,20.64298172160417,0.0,0.3,Extremely overstocked,0.0
+SKU-011,Leather Recliner,Furniture,13.636796859948419,7.801817170799275,0.15,Overstocked + Declining trend,1464.51
+SKU-023,Abstract Canvas Art,Decor,16.978074462549127,20.52442478957768,0.15,Overstocked + Declining trend,1275.81
+SKU-029,Stainless Steel Cookware Set,Kitchen,21.811860928199128,70.62497651155022,0.3,Extremely overstocked,4467.67
+SKU-039,Bamboo Cutting Board,Kitchen,21.720034166806524,34.90614513717318,0.3,Extremely overstocked,1870.2
+SKU-041,Flannel Duvet Cover,Bedding,27.938324489994674,41.64522064257236,0.5,Extremely overstocked,1243.32
+SKU-044,Quilted Mattress Pad,Bedding,77.2598278099999,117.41051362291404,0.5,Extremely overstocked,7339.33
+SKU-048,Silk Pillowcase,Bedding,18.45355718905202,0.0,0.15,Overstocked + Declining trend,0.0
+SKU-050,Hanging Planter,Outdoor,18.083702608914102,0.0,0.15,Overstocked + Declining trend,0.0

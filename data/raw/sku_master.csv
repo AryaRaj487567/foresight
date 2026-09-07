@@ -1,0 +1,62 @@
+sku_id,product_name,category,subcategory,launch_date,unit_cost,list_price
+SKU-001,Minimalist Desk,furniture,Tables,2022-07-11,85.91,185.03
+SKU-002,Velvet Armchair,Furniture,Tables,2025-02-23,81.76,184.36
+SKU-003,Oakwood Dining Table,Furniture,Sofas,2023-03-28,134.33,267.95
+SKU-004,Modern Coffee Table,Furniture,Tables,2022-11-23,186.61,380.34
+SKU-005,Linen Sofa,Furniture,Chairs,2023-03-17,241.01,490.6
+SKU-006,Upholstered Ottoman,furniture,Tables,2024-02-18,60.31,144.34
+SKU-007,Rustic Dining Chair,Furniture,Shelves,2022-03-30,193.24,420.37
+SKU-008,Ergonomic Office Chair,Furniture,Sofas,2022-06-11,155.93,371.2
+SKU-009,Wood TV Stand,Furniture,Shelves,2025-03-28,80.38,148.6
+SKU-010,Industrial Bookshelf,Furniture,Chairs,2023-08-16,246.9,592.24
+SKU-011,Leather Recliner,Furniture,Tables,2024-02-18,98.37,220.84
+SKU-012,Glass End Table,Furniture,Shelves,2022-11-30,117.74,229.2
+SKU-013,Geometric Rug,Decor,Pillows,2023-04-15,33.76,79.79
+SKU-014,Velvet Floor Cushion,Decor,Vases,2023-07-03,7.32,17.85
+SKU-015,Crystal Chandelier,Decor,Wall Art,2023-03-12,27.94,58.03
+SKU-016,Wooden Picture Frame,Decor,Vases,2022-10-20,14.27,28.15
+SKU-017,Linen Throw Pillow,Decor,Wall Art,2025-04-12,20.0,44.17
+SKU-018,Faux Potted Plant,Decor,Wall Art,2023-03-26,39.91,75.7
+SKU-019,Woven Wall Hanging,Decor,Vases,2022-07-06,31.45,75.57
+SKU-020,Brass Table Lamp,Decor,Lighting,2022-11-24,32.72,68.57
+SKU-021,Metal Wall Sconce,Decor,Pillows,2024-02-28,18.36,45.85
+SKU-022,Decorative Mirror,Decor,Wall Art,2025-02-07,35.13,63.52
+SKU-023,Abstract Canvas Art,Decor,Pillows,2025-01-04,31.28,73.13
+SKU-024,Macrame Plant Hanger,Decor,Wall Art,2022-08-17,15.27,29.18
+SKU-025,Knit Throw Blanket,Decor,Pillows,2023-06-24,39.02,91.05
+SKU-026,Ceramic Vase Set,Decor,Pillows,2023-09-04,34.46,74.27
+SKU-027,Scented Candle Set,Decor,Lighting,2022-11-10,18.09,34.61
+SKU-028,Spice Rack,Kitchen,Utensils,2022-06-11,12.45,26.65
+SKU-029,Stainless Steel Cookware Set,Kitchen,Cookware,2024-12-26,47.82,90.37
+SKU-030,Mixing Bowl Set,Kitchen,Storage,2025-01-30,16.59,35.99
+SKU-031,Chef's Knife,Kitchen,Utensils,2024-05-16,58.15,142.48
+SKU-032,Dutch Oven,Kitchen,Utensils,2023-02-16,45.07,93.71
+SKU-033,Toaster Oven,Kitchen,Utensils,2024-02-04,30.78,66.56
+SKU-034,Espresso Machine,Kitchen,Cookware,2023-05-23,19.68,40.08
+SKU-035,Glass Storage Jars,Kitchen,Utensils,2025-02-08,19.97,39.02
+SKU-036,Silicone Utensil Set,Kitchen,Cookware,2022-05-01,19.9,48.43
+SKU-037,Coffee Grinder,kitchen,Storage,2022-05-26,34.74,69.3
+SKU-038,Cast Iron Skillet,Kitchen,Storage,2023-03-15,36.04,83.12
+SKU-039,Bamboo Cutting Board,Kitchen,Utensils,2025-03-26,32.58,76.54
+SKU-040,Weighted Blanket,Bedding,Sheets,2022-07-21,18.94,43.75
+SKU-041,Flannel Duvet Cover,Bedding,Sheets,2023-05-25,27.45,59.71
+SKU-042,Down Alternative Comforter,Bedding,Comforters,2024-05-14,26.93,57.2
+SKU-043,Egyptian Cotton Sheet Set,Bedding,Sheets,2024-06-26,67.52,161.99
+SKU-044,Quilted Mattress Pad,Bedding,Sheets,2022-04-14,57.39,125.02
+SKU-045,Microfiber Sheet Set,Bedding,Sheets,2022-07-11,75.21,180.06
+SKU-046,Memory Foam Pillow,Bedding,Comforters,2024-04-12,46.57,90.79
+SKU-047,Linen Bed Skirt,Bedding,Mattress Toppers,2022-05-01,25.7,46.3
+SKU-048,Silk Pillowcase,Bedding,Mattress Toppers,2023-06-28,75.22,176.74
+SKU-049,Cooling Gel Pillow,Bedding,Pillows,2024-05-16,60.28,139.33
+SKU-050,Hanging Planter,Outdoor,seating,2025-04-11,81.98,200.32
+SKU-051,Outdoor Rug,Outdoor,Accessories,2022-11-19,27.39,59.04
+SKU-052,Hammock Chair,Outdoor,Seating,2022-05-21,97.35,221.24
+SKU-053,Wicker Lounge Chair,Outdoor,Seating,2024-04-06,35.59,86.24
+SKU-054,String Lights,Outdoor,seating,2025-03-31,97.29,217.3
+SKU-055,Solar Garden Lights,Outdoor,Lighting,2025-04-10,93.48,188.97
+SKU-056,Teak Patio Set,Outdoor,Lighting,2023-02-23,107.06,216.25
+SKU-057,Outdoor Fire Pit,OUTDOOR,Lighting,2024-03-21,37.01,83.34
+SKU-058,Rattan Sectional,Outdoor,Lighting,2023-10-10,140.77,345.59
+SKU-059,Patio Umbrella,OUTDOOR,Seating,2024-07-27,100.75,221.06
+SKU-060,Bird Feeder,Outdoor,seating,2022-05-31,89.89,193.63
+SKU-001,Minimalist Desk,furniture,Tables,2022-07-11,85.91,185.03

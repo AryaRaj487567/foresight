@@ -1,0 +1,14 @@
+sku_id,product_name,category,risk_level,on_hand_units,recommended_order_qty,estimated_cost,priority
+SKU-005,Linen Sofa,Furniture,HIGH,63.0,76.0,18316.76,HIGH
+SKU-006,Upholstered Ottoman,Furniture,HIGH,56.0,288.0,17369.28,HIGH
+SKU-012,Glass End Table,Furniture,HIGH,124.0,113.0,13304.62,HIGH
+SKU-013,Geometric Rug,Decor,HIGH,0.0,331.0,11174.56,HIGH
+SKU-024,Macrame Plant Hanger,Decor,HIGH,44.0,116.0,1771.32,HIGH
+SKU-028,Spice Rack,Kitchen,HIGH,17.0,38.0,473.1,HIGH
+SKU-032,Dutch Oven,Kitchen,CRITICAL,0.0,353.0,15909.71,URGENT
+SKU-033,Toaster Oven,Kitchen,HIGH,34.0,290.0,8926.2,HIGH
+SKU-043,Egyptian Cotton Sheet Set,Bedding,HIGH,15.0,334.0,22551.68,HIGH
+SKU-051,Outdoor Rug,Outdoor,HIGH,90.0,177.0,4848.03,HIGH
+SKU-053,Wicker Lounge Chair,Outdoor,CRITICAL,0.0,584.0,20784.56,URGENT
+SKU-056,Teak Patio Set,Outdoor,HIGH,53.0,56.0,5995.36,HIGH
+SKU-060,Bird Feeder,Outdoor,HIGH,0.0,308.0,27686.12,HIGH
