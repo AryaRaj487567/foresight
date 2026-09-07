@@ -226,6 +226,14 @@ Available endpoints:
 * `GET /markdown` — Markdown clearance candidates
 * `GET /recommendations` — Unified 4-tier inventory recommendations
 * `GET /backtest` — Rolling-origin backtesting evaluation metrics
+* `POST /predict` — Unified SKU demand prediction, risk scoring, operational recommendation, and financial exposure calculation
+
+Example `POST /predict` payload:
+```json
+{
+  "sku_id": "SKU-001"
+}
+```
 
 ### 5. Run Automated Unit & Integration Tests
 ```bash
